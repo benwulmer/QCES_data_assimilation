@@ -36,4 +36,6 @@ from .visualisation import (
     plot_pdf,
     animate_advection,
     plot_trajectory_from_initial_condition,
+    plot_gaussian_2d,
+    evaluate_gaussian_pdf,
 )

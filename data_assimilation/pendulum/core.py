@@ -143,6 +143,24 @@ def advect_pdf_grid(eom_func, pdf_func, t_final, grid_limits, resolution, eom_ar
 # --- Bayesian Tools ---
 
 
+def get_gaussian_pdf_func(mean, cov):
+    """
+    Returns a callable PDF function that handles full covariance matrices.
+    """
+    from scipy.stats import multivariate_normal
+
+    # Pre-calculate the distribution object for speed
+    dist = multivariate_normal(mean=mean, cov=cov)
+
+    def pdf_func(*args):
+        # args will be (THETA_grid, P_grid)
+        # We need to stack them into (..., 2) to match scipy's expectations
+        pos = np.stack(args, axis=-1)
+        return dist.pdf(pos)
+
+    return pdf_func
+
+
 def get_independent_gaussian_func(means, stds):
     """
     Factory that returns a callable PDF function for independent Gaussians.

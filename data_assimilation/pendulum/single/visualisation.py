@@ -11,6 +11,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.collections import LineCollection
 from matplotlib.patches import Ellipse
 
+from scipy.stats import multivariate_normal
 
 from .. import core
 from . import physics as phys
@@ -163,6 +164,56 @@ def plot_ensemble_stats(ensemble_trajectories, t_points):
 
     plt.tight_layout()
     plt.show()
+
+
+def evaluate_gaussian_pdf(X_grid, Y_grid, mean, cov):
+    """
+    Evaluates a Multivariate Gaussian PDF using scipy.stats.
+    Matches the indexing='ij' convention from the core engine.
+
+    Args:
+        X_grid (THETA): 2D meshgrid of angle values.
+        Y_grid (P): 2D meshgrid of momentum values.
+        mean: State vector [theta_bar, p_bar].
+        cov: 2x2 covariance matrix.
+    """
+    # Stack grids to create an (N, M, 2) array of coordinate pairs
+    # This ensures the evaluator 'sees' [theta, p] for every point
+    pos = np.stack([X_grid, Y_grid], axis=-1)
+
+    # Evaluate using scipy.stats
+    return multivariate_normal.pdf(pos, mean=mean, cov=cov)
+
+
+def plot_gaussian_2d(ax, mean, cov, x_lim, y_lim, res=150, title="Gaussian PDF"):
+    """
+    Plots a 2D Gaussian PDF aligned with the indexing='ij' convention.
+    """
+    from scipy.stats import multivariate_normal
+
+    # 1. Generate axes using 'ij' to match core.advect_pdf_grid
+    theta_vals = np.linspace(x_lim[0], x_lim[1], res)
+    p_vals = np.linspace(y_lim[0], y_lim[1], res)
+    THETA, P = np.meshgrid(theta_vals, p_vals, indexing="ij")  #
+
+    # 2. Stack as (N, M, 2) where the last dimension is exactly [theta, p]
+    pos = np.stack([THETA, P], axis=-1)
+
+    # 3. Evaluate the PDF
+    rv = multivariate_normal(mean, cov)
+    Z = rv.pdf(pos)
+
+    # 4. Plot using the ij meshgrids
+    contour = ax.contourf(THETA, P, Z, levels=30, cmap="viridis")
+
+    # 5. Fix Grid Lines: Ensure they are drawn on top of the contour
+    ax.set_axisbelow(False)  # Forces grid lines to the front
+    ax.grid(True, color="white", alpha=0.3, linestyle="--")
+
+    ax.set_title(title)
+    ax.set_xlabel(r"$\theta$")
+    ax.set_ylabel(r"$p$")
+    return contour
 
 
 def plot_pdf(
@@ -507,4 +558,58 @@ def animate_advection(
     # 5. Create Animation
     anim = FuncAnimation(fig, update, frames=len(t_points), interval=50, blit=False)
     plt.close(fig)
+    return anim
+
+
+def animate_linear_comparison(t_points, sol_nl, sol_l, L=1.0, theta0_deg=None):
+    """
+    Side-by-side animation comparing the Non-linear (True) and Linear (Approx)
+    physical motion.
+
+    Args:
+        t_points: 1D array of time values.
+        sol_nl: 2D array [theta, p] from the non-linear physics.
+        sol_l: 2D array [theta, p] from the linear physics.
+        L: Length of the pendulum.
+        theta0_deg: Optional initial angle in degrees for the title.
+    """
+    fig, (ax_true, ax_lin) = plt.subplots(1, 2, figsize=(12, 6))
+
+    # 1. Setup Axes
+    for ax, title in zip([ax_true, ax_lin], ["Non-linear (True)", "Linear (Approx)"]):
+        ax.set_xlim(-1.2 * L, 1.2 * L)
+        ax.set_ylim(-1.2 * L, 1.2 * L)
+        ax.set_aspect("equal")
+        ax.grid(True, alpha=0.3)
+        ax.set_title(title)
+
+    # 2. Create Visual Objects
+    (line_true,) = ax_true.plot(
+        [], [], "o-", lw=2, color="k", markerfacecolor="royalblue", markersize=10
+    )
+    (line_lin,) = ax_lin.plot(
+        [], [], "o-", lw=2, color="r", markerfacecolor="firebrick", markersize=10
+    )
+    time_text = ax_true.text(0.05, 0.9, "", transform=ax_true.transAxes)
+
+    def update(i):
+        # Convert angles to Cartesian for both solutions
+        x_t, y_t = phys.get_coords(sol_nl[0, i], L)
+        x_l, y_l = phys.get_coords(sol_l[0, i], L)
+
+        line_true.set_data([0, x_t], [0, y_t])
+        line_lin.set_data([0, x_l], [0, y_l])
+
+        time_text.set_text(f"t = {t_points[i]:.1f}s")
+        return line_true, line_lin, time_text
+
+    # Handle the title with doubled braces for LaTeX safety
+    title_str = "Linearization Accuracy Comparison"
+    if theta0_deg is not None:
+        title_str += rf" ($\theta_{{0}} = {theta0_deg}^\circ$)"
+
+    plt.suptitle(title_str, fontsize=14)
+
+    anim = FuncAnimation(fig, update, frames=len(t_points), interval=50, blit=True)
+    plt.close(fig)  # Prevent static plot from displaying
     return anim
