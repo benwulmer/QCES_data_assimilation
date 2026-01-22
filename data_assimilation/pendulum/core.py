@@ -148,7 +148,7 @@ def advect_pdf_grid(eom_func, pdf_func, t_final, grid_limits, resolution, eom_ar
     """Generic Liouville Advection on a hyper-grid."""
 
     # 1. Evaluate Initial PDF on Grid (Refactored to use common logic)
-    axes, Z_initial = evaluate_pdf_on_grid(pdf_func, grid_limits, resolution)
+    axes, initial = evaluate_pdf_on_grid(pdf_func, grid_limits, resolution)
 
     # Need grids for advection calculation
     grids = np.meshgrid(*axes, indexing="ij")
@@ -177,14 +177,14 @@ def advect_pdf_grid(eom_func, pdf_func, t_final, grid_limits, resolution, eom_ar
 
     # 3. Evaluate PDF at the origins (Liouville's Theorem: f(x_t, t) = f(x_0, 0))
     # Note: This assumes divergence-free flow (conservative system).
-    Z_advected = pdf_func(*origins)
+    advected = pdf_func(*origins)
 
     # 4. Normalize
-    norm_const = compute_normalization(Z_initial, axes)
+    norm_const = compute_normalization(initial, axes)
     if norm_const == 0:
         norm_const = 1.0
 
-    return axes, Z_initial / norm_const, Z_advected / norm_const
+    return axes, initial / norm_const, advected / norm_const
 
 
 # --- Bayesian Tools ---
@@ -365,16 +365,16 @@ def assimilate_cycle(
         dt = t_now - t_prev
 
         # 1. FORECAST
-        Z_forecast = forecast_func(current_pdf_func, dt)
+        forecast = forecast_func(current_pdf_func, dt)
 
         # 2. ANALYSIS
-        Z_posterior, evidence = analysis_func(Z_forecast, obs_val, obs_std)
+        posterior, evidence = analysis_func(forecast, obs_val, obs_std)
 
         # 3. Store
-        results.append({"time": t_now, "posterior": Z_posterior, "evidence": evidence})
+        results.append({"time": t_now, "posterior": posterior, "evidence": evidence})
 
         # 4. Prepare Next Step
-        current_pdf_func = grid_to_func_wrapper(Z_posterior)
+        current_pdf_func = grid_to_func_wrapper(posterior)
         t_prev = t_now
 
     return results
