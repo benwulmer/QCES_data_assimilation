@@ -24,6 +24,7 @@ from .core import (
     # Statistics & Math
     wrap_angle,
     get_pdf_from_grid,
+    evaluate_pdf_on_grid,
     compute_normalization,
     marginalise_grid,
     # Bayesian Inference
@@ -31,6 +32,9 @@ from .core import (
     get_gaussian_pdf_func,
     bayesian_update,
     gaussian_likelihood,
+    GaussianLikelihood,
+    LinearGaussianLikelihood,
+    sample_from_grid,
     # Visualisation Helpers
     display_animation_html,
 )

@@ -57,6 +57,9 @@ def plot_bayesian_analysis(X, Y, prior, likelihood, posterior, obs_val, obs_time
     # 3. Posterior
     plot_panel(axes[2], posterior, "Posterior PDF")
 
+    for ax in axes:
+        ax.set_aspect("equal")
+
     plt.suptitle("Bayesian Analysis Step", fontsize=16)
     plt.tight_layout()
     plt.show()
@@ -516,6 +519,7 @@ def animate_advection(
     ax.set_xlabel(r"$\theta$ ")
     ax.set_ylabel(r"$p$")
     ax.grid(True, alpha=0.3)
+    ax.set_aspect("equal")
 
     # Initial Plot (t=0)
     Z_0 = pdf_func(X, Y)
