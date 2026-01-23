@@ -1,9 +1,9 @@
 [project]
 name = "data-assimilation"
 version = "0.1.0"
-description = ""
+description = "A simple library to accompany my part of the QCES Climate Data option"
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "David Al-Attar",email = "da380@cam.ac.uk"}
 ]
 readme = "README.md"
 requires-python = ">=3.11"
