@@ -6,9 +6,9 @@ This repository contains the lecture materials and practical exercises for the *
 
 The easiest way to run these notebooks is via Google Colab. 
 
-* **Lecture 1: Bayesian Foundations** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/da380/QCES_data_assimilation/blob/main/lecture1.ipynb)
+* **Lecture 1: Bayesian Foundations** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/da380/QCES_data_assimilation/blob/main/lectures/lecture1.ipynb)
 
-* **Lecture 2: Kalman Filters & Ensembles** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/da380/QCES_data_assimilation/blob/main/lecture2.ipynb)
+* **Lecture 2: Kalman Filters & Ensembles** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/da380/QCES_data_assimilation/blob/main/lectures/lecture2.ipynb)
 
 > **Note for Colab Users:** To save your progress and edits, go to **File > Save a copy in Drive**. 
 
