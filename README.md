@@ -13,7 +13,7 @@ The easiest way to run these notebooks is via Google Colab.
 * **Lecture 2: Kalman Filters & Ensembles** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/da380/QCES_data_assimilation/blob/main/lectures/lecture2.ipynb)
 
 
-> **Note for Colab Users:** To save your progress and edits, go to **File > Save a copy in Drive**. 
+> **💡 How to save your work:** > When you open these links, you are in a "playground" mode. To save your own edits and solutions, go to **File > Save a copy in Drive**. This will create a copy in your personal Google Drive that you can edit and save indefinitely.
 
 --- 
 
