@@ -13,7 +13,7 @@ dependencies = [
     "jupyter (>=1.1.1,<2.0.0)",
     "numpy (>=2.3.3,<3.0.0)",
     "pyqt6 (>=6.9.1,<7.0.0)",
-    "pygeoinf (>=1.4.1,<2.0.0)",
+    "pygeoinf (>=1.4.2,<2.0.0)",
 ]
 
 [tool.poetry.group.tests]
