@@ -1,6 +1,6 @@
 # QCES Climate Data: Data Assimilation
 
-This repository contains the lecture and practical material for the **Data Assimilation** part of the QCES Climate Data course. The course introduces Bayesian methods, Kalman filters, and ensemble techniques using a single and double penduluns as "toy problems" to illustrate
+This repository contains the lecture and practical material for the **Data Assimilation** part of the QCES Climate Data course. The course introduces Bayesian methods, Kalman filters, and ensemble techniques using a single and double pendulums as "toy problems" to illustrate
  complex climate science concepts.
 
 
